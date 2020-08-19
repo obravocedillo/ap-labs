@@ -12,24 +12,22 @@ This is the first challenge in your Advanced Programming Class.
 Build Requirements
 ------------------
 ```
-# Build Requirements here
+Python version 3
 ```
 
 
 How to build
 ------------
 ```
-Test
-# instructions here
+No build needed
 ```
 
 
 How to Run
 ----------
 ```
-# instructions here
+Run the command "python first-challenge.py"
 ```
-
 
 General instructions
 --------------------
