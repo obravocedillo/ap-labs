@@ -16,19 +16,18 @@ files:
 
 test: build files
 	 @echo Test 1
-	./${APP_NAME} --encode vigilante.txt
-	./${APP_NAME} --decode vigilante-encoded.txt
+	./${APP_NAME} --encode vigilante
+	./${APP_NAME} --decode vigilante-encode
 	@echo Test 2
-	./${APP_NAME} --encode sick-kid.txt
-	./${APP_NAME} --decode sick-kid-encoded.txt
+	./${APP_NAME} --encode sick-kid
+	./${APP_NAME} --decode sick-kid-encoded
 	@echo Test 3
-	./${APP_NAME} --encode aesop11.txt
-	./${APP_NAME} --decode aesop11-encoded.txt
+	./${APP_NAME} --encode aesop11
+	./${APP_NAME} --decode aesop11-encoded
 	@echo Test 4 - megafile - 2 Gb
-	./${APP_NAME} --encode megafile.txt
-	./${APP_NAME} --decode megafile-encoded.txt
+	./${APP_NAME} --encode megafile
+	./${APP_NAME} --decode megafile-encoded
 	@echo Test 5 - failed test
-	./${APP_NAME} --decode non-existing-file.txt
-
+	./${APP_NAME} --decode non-existing-file
 clean:
 	rm -rf *.o ${APP_NAME} *-encoded.txt vgilante.txt sick-kid.txt aesop11.txt megafile.txt
