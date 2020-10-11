@@ -6,11 +6,19 @@ import (
 	"log"
 	"net"
 	"time"
+	"os"
+	"fmt"
 )
 
-func handleConn(c net.Conn) {
+func handleConn(c net.Conn, timeZone string) {
 	defer c.Close()
 	for {
+		//get time from location
+		_, errTime := time.LoadLocation(timeZone)
+		if errTime != nil {
+			log.Fatal(errTime)
+			break
+		}
 		_, err := io.WriteString(c, time.Now().Format("15:04:05\n"))
 		if err != nil {
 			return // e.g., client disconnected
@@ -20,7 +28,15 @@ func handleConn(c net.Conn) {
 }
 
 func main() {
-	listener, err := net.Listen("tcp", "localhost:9090")
+	//more arguments than needed
+	if len(os.Args[1:]) < 2{
+		log.Fatal("Less arguments than needed")
+	}
+	//time zone the user selected
+	tz := os.Getenv("TZ")
+	port := "localhost:"+os.Args[2]
+	fmt.Println("Port used: " + port)
+	listener, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -30,6 +46,6 @@ func main() {
 			log.Print(err) // e.g., connection aborted
 			continue
 		}
-		go handleConn(conn) // handle connections concurrently
+		go handleConn(conn, tz) // handle connections concurrently
 	}
 }
