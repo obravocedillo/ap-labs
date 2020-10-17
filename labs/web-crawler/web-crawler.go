@@ -16,7 +16,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-
+	"flag"
 	"gopl.io/ch5/links"
 )
 
@@ -24,9 +24,15 @@ import (
 // tokens is a counting semaphore used to
 // enforce a limit of 20 concurrent requests.
 var tokens = make(chan struct{}, 20)
+var f *os.File
+var errf error 
 
 func crawl(url string) []string {
 	fmt.Println(url)
+	_, err := f.WriteString(url+"\n")
+	if err != nil{
+		fmt.Println("Error writing file")
+	}
 	tokens <- struct{}{} // acquire a token
 	list, err := links.Extract(url)
 	<-tokens // release the token
@@ -44,22 +50,44 @@ func main() {
 	worklist := make(chan []string)
 	var n int // number of pending sends to worklist
 
+	if len(os.Args) < 3 {
+		fmt.Println("Error more arguments are needed")
+		return
+	}
+
+	depth := flag.Int("depth", 1, "links to crawl")
+	results := flag.String("results", "results.txt", "Results file to save links")
+	flag.Parse()
+
+	f, errf = os.Create(*results)
+	
+	if errf != nil{
+		fmt.Println("Error creating file")
+		return
+	}
+	defer f.Close()
+
+	
 	// Start with the command-line arguments.
 	n++
-	go func() { worklist <- os.Args[1:] }()
+	currentDepth := 0
+	go func() { worklist <- os.Args[2:] }()
 
 	// Crawl the web concurrently.
 	seen := make(map[string]bool)
 	for ; n > 0; n-- {
 		list := <-worklist
-		for _, link := range list {
-			if !seen[link] {
-				seen[link] = true
-				n++
-				go func(link string) {
-					worklist <- crawl(link)
-				}(link)
+		if currentDepth <= *depth {
+			for _, link := range list {
+				if !seen[link] {
+					seen[link] = true
+					n++
+					go func(link string) {
+						worklist <- crawl(link)
+					}(link)
+				}
 			}
+			currentDepth++	
 		}
 	}
 }
