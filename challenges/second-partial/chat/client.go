@@ -11,21 +11,31 @@ import (
 	"log"
 	"net"
 	"os"
+	"flag"
+	"fmt"
 )
 
 //!+
 func main() {
-	conn, err := net.Dial("tcp", "localhost:8000")
+
+	//Obtain variables from command line arguments
+	server := flag.String("server", "", "Server and port where we want to connect")
+	user := flag.String("user","","Username of the person")
+	flag.Parse()
+
+	conn, err := net.Dial("tcp", *server)
 	if err != nil {
 		log.Fatal(err)
 	}
 	done := make(chan struct{})
 	go func() {
+		fmt.Println("Please write your username, this will be your id")
 		io.Copy(os.Stdout, conn) // NOTE: ignoring errors
 		log.Println("done")
 		done <- struct{}{} // signal the main goroutine
 	}()
-	mustCopy(conn, os.Stdin)
+	fmt.Println("Welcome to the simple IRC Server " + *user + " waiting for new messages")
+	mustCopy(conn, os.Stdin) 
 	conn.Close()
 	<-done // wait for background goroutine to finish
 }
