@@ -3,8 +3,7 @@
 APP_NAME =multiplier
 LIB_NAME =logger
 CC      = gcc
-CFLAGS  = -Wall
-
+CFLAGS  = -Wall -pthread
 
 data_files:
 	curl -Ok https://storage.googleapis.com/classify-share/matA.dat
