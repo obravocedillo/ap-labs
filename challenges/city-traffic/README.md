@@ -2,7 +2,7 @@
  Multi thread traffic simulator made in Golang. This program simulates a small portion of a city, where the number of cars and traffic lights can be adjusted, each one of them controlled by a different thread. Cars follow given routes respecting the stop sign or color of the traffic light, cars ahead of them and the direction of the road.  
 
 ## Build Requirements
-- Go version 1.12 or above as required by the Ebiten videogame library
+- Go version 1.15 or above as required by the Ebiten videogame library
 
 ## How to compile & run
 
